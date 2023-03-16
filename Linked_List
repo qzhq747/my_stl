@@ -1,0 +1,178 @@
+#include<iostream>
+using namespace std;
+
+
+template <class T>
+class LinkedList{
+public:
+class node
+    {
+    public:
+        T data;
+        node *next;
+
+        node * gtnxt(int step){
+        if(step==0)
+            return this;
+        else{
+        node* p=next;
+        for(int i=1;i<step;i++){
+            p=p->next;
+        }
+        return  p;
+        }
+    }
+    node (T dat,node* nxt){
+        data=dat;
+        next=nxt;
+    }
+    node(node* nxt){
+        next=nxt;
+    }
+
+};
+    int n;
+    node * head;
+
+    LinkedList(){
+        n=0;
+        head= new node(NULL);
+        head->next=NULL;
+    }
+    LinkedList(const LinkedList<T> &obj){
+        n=obj.n;
+        node* hed;
+        node* p;
+        hed=new node(NULL);
+        hed->next=NULL;
+        node* f;
+        f=obj.head;
+        f=f->next;
+        for(int i=0;i<n;i++){
+            p=new node(f->data,hed->next);
+            hed->next=p;
+            f=f->next;
+        }
+        head=hed;
+    }
+    ~LinkedList(){
+        if(n==0)
+            delete head;
+        else{
+        node *p=head->next;
+        for(int i=1;i<n;i++){
+            node *q=p->next;
+            delete p;
+            p=q;
+        }
+        delete p;
+        delete head;
+        }
+        };
+    void pushFront(T a){
+        node *p ,*q;
+        q=head->next;
+        p=new node(a, q);
+        head->next=p;
+        n++;
+    };
+    void pushBack(T a){
+        if(n==0){
+            node *ab;
+            ab=new node(a,NULL);
+            head->next=ab;
+            n++;
+            }
+        else {
+        node* p,*q;
+        p=new node(a,NULL);
+
+
+
+        q=head->gtnxt(n);
+        q->next=p;
+        n++;
+        }
+
+    };
+    T popFront(){
+        if(n==0)
+            return T();
+        else{
+        node *p;
+        p=head->next;
+        head->next=p->next;
+        T a;
+        a=p->data;
+        delete p;
+        n--;
+        return a;
+        }
+    };
+    T popBack(){
+        if(n==0)
+            return T();
+        else{
+        node *p,*q;
+        p=head->gtnxt(n-1);
+        q=p->next;
+        T a;
+        a=q->data;
+        delete q;
+        p->next=NULL;
+        n--;
+        return a;
+        }
+    };
+    int size(){
+    return n;};
+    void print(){
+        node *p;
+        p=head->next;
+        for(int i=0;i<n;i++){
+            cout<<p->data<<" ";
+            p=p->next;
+        }
+        cout<<endl;
+    }
+    virtual const char* name() const{return "rubbish";};
+    virtual T peak(){return T();};
+    virtual T pop(){return T();};
+    virtual void push(T val){};
+};
+
+
+template<class T>
+class Stack : public LinkedList<T> {
+public:
+    const char* name() const{
+        return "Stack";
+    }
+    T pop(){
+        return this->popBack();
+    }
+    T peak(){
+        return this->head->gtnxt(this->n)->data;
+    }
+    void push(T val){
+        this->pushBack(val);
+    }
+};
+template<class T>
+class Queue : public LinkedList<T> {
+    public:
+    const char* name() const{
+        return "Queue";
+    }
+    T pop(){
+        return this->popFront();
+    }
+    T peak(){
+        T a;
+        a= this->head->next->data;
+        return a;
+    }
+    void push(T val){
+        this->pushBack(val);
+    }
+};
